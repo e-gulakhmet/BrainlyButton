@@ -15,9 +15,10 @@ GButton button(BUTTON_PIN);
 String mac = WiFi.macAddress();
 
 const String topics[] = {
-  "button/id",
-  "button/" + mac + "/tx",
-  "button/" + mac + "/rx"
+  "home/id",
+  "home/" + mac + "/type"
+  "home/" + mac + "/tx",
+  "home/" + mac + "/rx"
 };
 
 
@@ -43,7 +44,7 @@ void callBack(char* topic, byte* payload, unsigned int length) { // Функци
   // }
 
 
-  if (strTopic == topics[1]) { // Если прилетела команда статус,
+  if (strTopic == topics[2]) { // Если прилетела команда статус,
     if (strPayload == "status") {
       // client.publish(topics[2].c_str(), is_on ? "on" : "off");
     }
@@ -130,15 +131,17 @@ void loop() {
   // Отправляем id модуля раз в минуту
   if (millis() - timer > 10*1000) {
     client.publish(topics[0].c_str(), mac.c_str());
+    delay(100);
+    client.publish(topics[1].c_str(), name);
     timer = millis();
   }
 
   if (button.isClick())
-    client.publish(topics[2].c_str(), "click");
+    client.publish(topics[3].c_str(), "click");
   if (button.isDouble())
-    client.publish(topics[2].c_str(), "double");
+    client.publish(topics[3].c_str(), "double");
   if (button.isHolded())
-    client.publish(topics[2].c_str(), "holded");
+    client.publish(topics[3].c_str(), "holded");
   if (button.isHold())
-    client.publish(topics[2].c_str(), "hold");
+    client.publish(topics[3].c_str(), "hold");
 }
